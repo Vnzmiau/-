@@ -15,7 +15,7 @@ def manageApplication(request,application_id=None):
         work_experience=data.get('work_experience')
         file_data=data.get('file')
         application=Application.objects.create(
-            applicant=request.user
+            applicant=request.user,
             profession=profession,
             education=education,
             work_experience=work_experience
@@ -23,3 +23,7 @@ def manageApplication(request,application_id=None):
         if file_data:
             application.file.save(file_data['name'],ContentFile(file_data['content']))
         return JsonResponse({'msg':'Application created succesfully','data': {'id': application.id, 'profession': application.profession, 'education': application.education}}, status=201)
+    elif request.method in ['PUT','PATCH']:
+        if application_id is None:
+            return JsonResponse({'error': 'Application ID is required for update'}, status=400)
+        
