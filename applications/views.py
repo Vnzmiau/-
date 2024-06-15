@@ -40,5 +40,9 @@ def manageApplication(request,application_id=None):
                     application.education=data['education']
                 if 'work_experience' in data:
                     application.work_experience = data['work_experience']
+            file_data=data.get('file')
+            if file_data:
+                application.file.save(file_data['name'], ContentFile(file_data['content']))
+            
             
         
