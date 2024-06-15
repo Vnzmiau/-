@@ -33,5 +33,12 @@ def manageApplication(request,application_id=None):
                 application.profession = data.get('profession', application.profession)
                 application.education = data.get('education', application.education)
                 application.work_experience = data.get('work_experience', application.work_experience)
+            elif request.method == 'PATCH':
+                if 'profession' in data:
+                    application.profession=data['profession']
+                if 'education' in data :
+                    application.education=data['education']
+                if 'work_experience' in data:
+                    application.work_experience = data['work_experience']
             
         
