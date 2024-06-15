@@ -8,6 +8,8 @@ class Application(models.Model):
     work_experience=models.TextField()
     updated=models.DateTimeField(auto_now=True)
     created=models.DateTimeField(auto_now_add=True)
+    file=models.FileField()
+    
 
     def __str__(self):
         return self.name
