@@ -43,6 +43,9 @@ def manageApplication(request,application_id=None):
             file_data=data.get('file')
             if file_data:
                 application.file.save(file_data['name'], ContentFile(file_data['content']))
-            
+            application.save()
+            return JsonResponse({'msg': 'Application updated successfully', 'data': {'id': application.id, 'profession': application.profession, 'education': application.education}}, status=200)
+        except Application.DoesNotExist:
+            return JsonResponse({'error': 'Application does not exist'}, status=404)
             
         
