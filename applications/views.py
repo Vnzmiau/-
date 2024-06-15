@@ -26,4 +26,12 @@ def manageApplication(request,application_id=None):
     elif request.method in ['PUT','PATCH']:
         if application_id is None:
             return JsonResponse({'error': 'Application ID is required for update'}, status=400)
+        try:
+            application=Application.objects.get(id=application_id)
+            data=json.loads(request.body)
+            if request.method == 'PUT':
+                application.profession = data.get('profession', application.profession)
+                application.education = data.get('education', application.education)
+                application.work_experience = data.get('work_experience', application.work_experience)
+            
         
