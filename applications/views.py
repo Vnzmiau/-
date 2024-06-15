@@ -57,4 +57,17 @@ def manageApplication(request,application_id=None):
         except Application.DoesNotExist:
             return JsonResponse({'error': 'Application does not exist'}, status=404)
             
-        
+    elif request.method == 'GET':
+        if application_id:
+            try:
+                application = Application.objects.get(id=application_id)
+                data = {
+                    'id': application.id,
+                    'profession': application.profession,
+                    'education': application.education,
+                    'work_experience': application.work_experience,
+                    'file': application.file.url if application.file else None
+                }
+                return JsonResponse({'msg': 'Application retrieved successfully', 'data': data}, status=200)
+            except Application.DoesNotExist:
+                return JsonResponse({'error': 'Application does not exist'}, status=404)
