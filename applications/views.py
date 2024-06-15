@@ -47,5 +47,14 @@ def manageApplication(request,application_id=None):
             return JsonResponse({'msg': 'Application updated successfully', 'data': {'id': application.id, 'profession': application.profession, 'education': application.education}}, status=200)
         except Application.DoesNotExist:
             return JsonResponse({'error': 'Application does not exist'}, status=404)
+    elif request.method == 'DELETE':
+        if application_id is None:
+            return JsonResponse({'error': 'Application ID is required for delete'}, status=400)
+        try:
+            application = Application.objects.get(id=application_id)
+            application.delete()
+            return JsonResponse({'msg': 'Application deleted successfully'}, status=204)
+        except Application.DoesNotExist:
+            return JsonResponse({'error': 'Application does not exist'}, status=404)
             
         
