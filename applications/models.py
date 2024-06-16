@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
-    full_name=models.CharField(max_length=100, null=True)
+    name=models.CharField(max_length=100, null=True)
     email=models.EmailField(unique=True, null=True)
     age=models.PositiveIntegerField(null=True,blank=True)
     city=models.CharField(max_length=100, null=True)
