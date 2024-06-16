@@ -51,12 +51,12 @@
     <p><strong>File:</strong> <a href="{{ application.file.url }}">{{ application.file.name }}</a></p>
     {% endif %}
     {% if application.applicant == request.user %}
-    <form action="/manage-application/{{ application.id }}" method="POST" style="display: inline;">
+    <form action="/applications/{{ application.id }}/" method="POST" style="display: inline;">
         {% csrf_token %}
         <input type="hidden" name="_method" value="DELETE">
         <button type="submit" class="delete-btn">Delete</button>
     </form>
-    <a href="/manage-application/{{ application.id }}" class="update-btn">Update</a>
+    <a href="/applications/{{ application.id }}/" class="update-btn">Update</a>
     {% endif %}
 </div>
 {% endfor %}
