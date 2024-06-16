@@ -3,10 +3,12 @@ from django.http import JsonResponse
 from .models import Application
 from django.core.files.base import ContentFile
 import json
+from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
     return render(request,'applications/home.html')
 
+@csrf_exempt
 def manageApplications(request):
     if request.method == 'POST':
         try:
@@ -34,7 +36,8 @@ def manageApplications(request):
         return render(request,'applications/manageApplications.html',context)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-def manageApplication(request, application_id):
+@csrf_exempt
+def manageApplication(request, application_id=None):
     try:
         application = Application.objects.get(id=application_id)
     except Application.DoesNotExist:
