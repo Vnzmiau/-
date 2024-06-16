@@ -64,4 +64,21 @@ def manageApplication(request, application_id):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
 
-   
+    elif request.method == 'PATCH':
+        try:
+            data = json.loads(request.body)
+            if 'profession' in data:
+                application.profession = data['profession']
+            if 'education' in data:
+                application.education = data['education']
+            if 'work_experience' in data:
+                application.work_experience = data['work_experience']
+            file_data = data.get('file')
+            if file_data:
+                application.file.save(file_data['name'], ContentFile(file_data['content']))
+            application.save()
+            return JsonResponse({'msg': 'Application updated successfully', 'data': {'id': application.id, 'profession': application.profession, 'education': application.education}}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
