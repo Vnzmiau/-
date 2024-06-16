@@ -8,7 +8,7 @@ class Application(models.Model):
     work_experience=models.TextField()
     updated=models.DateTimeField(auto_now=True)
     created=models.DateTimeField(auto_now_add=True)
-    file=models.FileField()
+    file=models.FileField(upload_to='application_files/', null=True, blank=True)
 
 
     def __str__(self):
