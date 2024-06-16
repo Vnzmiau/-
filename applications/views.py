@@ -73,15 +73,7 @@ def manageApplication(request,application_id=None):
                 return JsonResponse({'error': 'Application does not exist'}, status=404)
         else:
             applications=Application.objects.all()
-            data = [
-                {
-                    'id': app.id,
-                    'profession': app.profession,
-                    'education': app.education,
-                    'work_experience': app.work_experience,
-                    'file': app.file.url if app.file else None
-                } for app in applications
-            ]
-            return JsonResponse({'msg': 'Applications retrieved successfully', 'data': data}, status=200)
+            context={'applications':applications}
+            return render(request,'manageApplication.html',context)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
         
