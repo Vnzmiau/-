@@ -74,6 +74,6 @@ def manageApplication(request,application_id=None):
         else:
             applications=Application.objects.all()
             context={'applications':applications}
-            return render(request,'manageApplication.html',context)
+            return render(request,'applications/manageApplications.html',context)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
         
