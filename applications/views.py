@@ -82,3 +82,12 @@ def manageApplication(request, application_id):
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
+        
+    elif request.method == 'DELETE':
+        try:
+            application.delete()
+            return JsonResponse({'msg': 'Application deleted successfully'}, status=204)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
