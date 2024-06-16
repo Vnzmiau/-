@@ -34,4 +34,34 @@ def manageApplications(request):
         return render(request,'applications/manageApplications.html',context)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
-       
+def manageApplication(request, application_id):
+    try:
+        application = Application.objects.get(id=application_id)
+    except Application.DoesNotExist:
+        return JsonResponse({'error': 'Application does not exist'}, status=404)
+    if request.method == 'GET':
+        data = {
+            'id': application.id,
+            'profession': application.profession,
+            'education': application.education,
+            'work_experience': application.work_experience,
+            'file': application.file.url if application.file else None
+        }
+        return JsonResponse({'msg': 'Application retrieved successfully', 'data': data}, status=200)
+    elif request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            application.profession = data.get('profession', application.profession)
+            application.education = data.get('education', application.education)
+            application.work_experience = data.get('work_experience', application.work_experience)
+            file_data = data.get('file')
+            if file_data:
+                application.file.save(file_data['name'], ContentFile(file_data['content']))
+            application.save()
+            return JsonResponse({'msg': 'Application updated successfully', 'data': {'id': application.id, 'profession': application.profession, 'education': application.education}}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+   
