@@ -4,8 +4,15 @@
             <a href="#">MyWebsite</a>
         </div>
         <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="/applications/">Applications</a></li>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'applications_list' %}">Applications</a></li>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'logout' %}">Logout</a>
+            <a href="#">{{user.username}}</a>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+            {% endif %}
             <li><a href="#">Services</a></li>
             <li><a href="#">Contact</a></li>
         </ul>
