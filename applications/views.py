@@ -136,3 +136,6 @@ def loginPage(request):
             
     return render(request,'base/login_register.html',context)
 
+def logoutpage(request):
+    logout(request)
+    return redirect('home')
