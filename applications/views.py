@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import JsonResponse
-from .models import Application
+from .models import Application,User
 from django.core.files.base import ContentFile
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -110,3 +110,29 @@ def registerPage(request):
             messages.error(request, 'An error occured during registration')
 
     return render(request,'base/login_register.html',{'form':form})
+
+def loginPage(request):
+    page='login'
+    context={'page':page}
+
+    if request.user.is_authenticated:
+        return redirect('home')
+    
+    if request.method == 'POST':
+        email=request.POST.get('email')
+        password=request.POST.get('password')
+        try:
+            user=User.objects.get(email=email)
+        except:
+            messages.error(request, 'User does not exist')
+
+        user=authenticate(request,email=email,password=password)
+
+        if user is not None:
+            login(request,user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Email OR password does not exit')
+            
+    return render(request,'base/login_register.html',context)
+
