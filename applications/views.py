@@ -109,7 +109,7 @@ def registerPage(request):
         else:
             messages.error(request, 'An error occured during registration')
 
-    return render(request,'base/login_register.html',{'form':form})
+    return render(request,'applications/login_register.html',{'form':form})
 
 def loginPage(request):
     page='login'
@@ -134,7 +134,7 @@ def loginPage(request):
         else:
             messages.error(request, 'Email OR password does not exit')
             
-    return render(request,'base/login_register.html',context)
+    return render(request,'applications/login_register.html',context)
 
 def logoutpage(request):
     logout(request)
