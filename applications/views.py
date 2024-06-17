@@ -139,3 +139,20 @@ def loginPage(request):
 def logoutpage(request):
     logout(request)
     return redirect('home')
+
+@csrf_exempt
+def api_login(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            password = data.get('password')
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                login(request, user)
+                return JsonResponse({'msg': 'Login successful'}, status=200)
+            else:
+                return JsonResponse({'error': 'Invalid email or password'}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
