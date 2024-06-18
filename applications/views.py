@@ -58,6 +58,8 @@ def manageApplication(request, application_id=None):
         }
         return JsonResponse({'msg': 'Application retrieved successfully', 'data': data}, status=200)
     elif request.method == 'PUT':
+        if request.user != application.applicant:
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
         try:
             data = json.loads(request.body)
             application.profession = data.get('profession', application.profession)
@@ -74,6 +76,8 @@ def manageApplication(request, application_id=None):
             return JsonResponse({'error': str(e)}, status=400)
 
     elif request.method == 'PATCH':
+        if request.user != application.applicant:
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
         try:
             data = json.loads(request.body)
             if 'profession' in data:
@@ -93,6 +97,8 @@ def manageApplication(request, application_id=None):
             return JsonResponse({'error': str(e)}, status=400)
         
     elif request.method == 'DELETE':
+        if request.user != application.applicant:
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
         try:
             application.delete()
             return JsonResponse({'msg': 'Application deleted successfully'}, status=204)
@@ -199,6 +205,8 @@ def manageMessages(request, application_id, message_id=None):
             return JsonResponse({'msg': 'Messages retrieved successfully', 'data': data}, status=200)
         
     elif request.method == 'PUT' and message_id:
+        if request.user != message.user:
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
         try:
             data = json.loads(request.body)
             message = get_object_or_404(Message, id=message_id, application=application)
@@ -214,6 +222,8 @@ def manageMessages(request, application_id, message_id=None):
             return JsonResponse({'error': str(e)}, status=400)
         
     elif request.method == 'PATCH' and message_id:
+        if request.user != message.user:
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
         try:
             data = json.loads(request.body)
             message = get_object_or_404(Message, id=message_id, application=application)
@@ -230,6 +240,8 @@ def manageMessages(request, application_id, message_id=None):
             return JsonResponse({'error': str(e)}, status=400)
     
     elif request.method == 'DELETE' and message_id:
+        if request.user != message.user:
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
         try:
             message = get_object_or_404(Message, id=message_id, application=application)
             message.delete()
