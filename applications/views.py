@@ -177,6 +177,7 @@ def manageMessages(request, application_id, message_id=None):
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
+        
     elif request.method == 'GET':
         if message_id:
             message = get_object_or_404(Message, id=message_id, application=application)
@@ -192,3 +193,21 @@ def manageMessages(request, application_id, message_id=None):
             messages = Message.objects.filter(application=application)
             data = [{'id': message.id, 'body': message.body, 'file': message.file.url if message.file else None, 'user': message.user.id} for message in messages]
             return JsonResponse({'msg': 'Messages retrieved successfully', 'data': data}, status=200)
+        
+    elif request.method == 'PUT' and message_id:
+        try:
+            data = json.loads(request.body)
+            message = get_object_or_404(Message, id=message_id, application=application)
+            message.body = data.get('body', message.body)
+            file_data = data.get('file')
+            if file_data:
+                message.file.save(file_data['name'], ContentFile(file_data['content']))
+            message.save()
+            return JsonResponse({'msg': 'Message updated successfully', 'data': {'id': message.id, 'body': message.body, 'file': message.file.url if message.file else None}}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    
+
+
