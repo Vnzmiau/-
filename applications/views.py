@@ -1,6 +1,6 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import JsonResponse
-from .models import Application,User
+from .models import Application,User,Message
 from django.core.files.base import ContentFile
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -156,3 +156,25 @@ def api_login(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+@csrf_exempt
+def manageMessages(request, application_id, message_id=None):
+    application = get_object_or_404(Application, id=application_id)
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            body = data.get('body')
+            file_data = data.get('file')
+            message = Message.objects.create(
+                user=request.user,
+                application=application,
+                body=body
+            )
+            if file_data:
+                message.file.save(file_data['name'], ContentFile(file_data['content']))
+            return JsonResponse({'msg': 'Message created successfully', 'data': {'id': message.id, 'body': message.body, 'file': message.file.url if message.file else None}}, status=201)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+   
