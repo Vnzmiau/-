@@ -8,5 +8,8 @@ urlpatterns = [
     path('login/',views.loginPage,name='login'),
     path('register/',views.registerPage,name='register'),
     path('logout/',views.logoutpage,name='logout'),
-    path('api/login/', views.api_login, name='api_login'), 
+    path('api/login/', views.api_login, name='api_login'),
+    path('applications/<int:application_id>/messages/', views.manageMessages, name='message_list'),
+    path('applications/<int:application_id>/messages/<int:message_id>/', views.manageMessages, name='message_detail'),
+
 ]
