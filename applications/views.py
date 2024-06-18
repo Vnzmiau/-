@@ -205,11 +205,11 @@ def manageMessages(request, application_id, message_id=None):
             return JsonResponse({'msg': 'Messages retrieved successfully', 'data': data}, status=200)
         
     elif request.method == 'PUT' and message_id:
+        message = get_object_or_404(Message, id=message_id, application=application)
         if request.user != message.user:
             return JsonResponse({'error': 'Unauthorized'}, status=403)
         try:
             data = json.loads(request.body)
-            message = get_object_or_404(Message, id=message_id, application=application)
             message.body = data.get('body', message.body)
             file_data = data.get('file')
             if file_data:
@@ -222,11 +222,11 @@ def manageMessages(request, application_id, message_id=None):
             return JsonResponse({'error': str(e)}, status=400)
         
     elif request.method == 'PATCH' and message_id:
+        message = get_object_or_404(Message, id=message_id, application=application)
         if request.user != message.user:
             return JsonResponse({'error': 'Unauthorized'}, status=403)
         try:
             data = json.loads(request.body)
-            message = get_object_or_404(Message, id=message_id, application=application)
             if 'body' in data:
                 message.body = data['body']
             file_data = data.get('file')
@@ -240,10 +240,10 @@ def manageMessages(request, application_id, message_id=None):
             return JsonResponse({'error': str(e)}, status=400)
     
     elif request.method == 'DELETE' and message_id:
+        message = get_object_or_404(Message, id=message_id, application=application)
         if request.user != message.user:
             return JsonResponse({'error': 'Unauthorized'}, status=403)
         try:
-            message = get_object_or_404(Message, id=message_id, application=application)
             message.delete()
             return JsonResponse({'msg': 'Message deleted successfully'}, status=204)
         except Exception as e:
