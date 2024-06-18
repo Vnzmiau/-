@@ -4,6 +4,7 @@ from .models import Application,User,Message
 from django.core.files.base import ContentFile
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import  MyUserCreationForm
 from django.contrib.auth import authenticate, login, logout
@@ -11,6 +12,7 @@ from django.contrib.auth import authenticate, login, logout
 def home(request):
     return render(request,'applications/home.html')
 
+@login_required(login_url='login')
 @csrf_exempt
 def manageApplications(request):
     if request.method == 'POST':
@@ -39,6 +41,7 @@ def manageApplications(request):
         return render(request,'applications/manageApplications.html',context)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
+@login_required(login_url='login')
 @csrf_exempt
 def manageApplication(request, application_id=None):
     try:
@@ -157,6 +160,7 @@ def api_login(request):
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
+@login_required(login_url='login')
 @csrf_exempt
 def manageMessages(request, application_id, message_id=None):
     application = get_object_or_404(Application, id=application_id)
