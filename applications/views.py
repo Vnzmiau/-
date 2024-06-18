@@ -208,6 +208,7 @@ def manageMessages(request, application_id, message_id=None):
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
+        
     elif request.method == 'PATCH' and message_id:
         try:
             data = json.loads(request.body)
@@ -223,6 +224,15 @@ def manageMessages(request, application_id, message_id=None):
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
+    
+    elif request.method == 'DELETE' and message_id:
+        try:
+            message = get_object_or_404(Message, id=message_id, application=application)
+            message.delete()
+            return JsonResponse({'msg': 'Message deleted successfully'}, status=204)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
     
     
 
