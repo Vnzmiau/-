@@ -177,4 +177,18 @@ def manageMessages(request, application_id, message_id=None):
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
-   
+    elif request.method == 'GET':
+        if message_id:
+            message = get_object_or_404(Message, id=message_id, application=application)
+            data = {
+                'id': message.id,
+                'body': message.body,
+                'file': message.file.url if message.file else None,
+                'user': message.user.id,
+                'application': message.application.id
+            }
+            return JsonResponse({'msg': 'Message retrieved successfully', 'data': data}, status=200)
+        else:
+            messages = Message.objects.filter(application=application)
+            data = [{'id': message.id, 'body': message.body, 'file': message.file.url if message.file else None, 'user': message.user.id} for message in messages]
+            return JsonResponse({'msg': 'Messages retrieved successfully', 'data': data}, status=200)
